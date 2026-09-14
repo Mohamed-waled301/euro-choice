@@ -296,7 +296,11 @@ export const MOCK_RECORDS = [
 // Provide mock responses for any backend endpoint when in Demo Mode
 export function getDemoResponse(endpoint: string, options: any = {}): any {
   const method = (options.method || 'GET').toUpperCase();
-  const cleanPath = endpoint.replace(/^\/?api\/?/, '').split('?')[0];
+  const cleanPath = endpoint
+    .replace(/^https?:\/\/[^/]+/, '')
+    .replace(/^\/?(api\/)?/, '')
+    .replace(/^\/+/, '')
+    .split('?')[0];
 
   // Auth
   if (cleanPath === 'auth/login') {

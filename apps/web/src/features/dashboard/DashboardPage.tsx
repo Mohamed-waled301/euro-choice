@@ -47,11 +47,13 @@ export const DashboardPage: React.FC = () => {
     );
   }
 
+  const byStatus = data?.byStatus || {};
+
   const statCards = [
     {
       title: 'Total Active Records',
-      value: data.total,
-      subtitle: `${data.byStatus['Open'] || 0} Open · ${data.byStatus['In Progress'] || 0} In Progress`,
+      value: data?.total ?? 0,
+      subtitle: `${byStatus['Open'] || 0} Open · ${byStatus['In Progress'] || 0} In Progress`,
       icon: FolderArchive,
       color: 'bg-yellow-400 text-slate-950',
       border: 'border-yellow-200',
@@ -59,7 +61,7 @@ export const DashboardPage: React.FC = () => {
     },
     {
       title: 'Planning Tomorrow',
-      value: data.planningTomorrowCount,
+      value: data?.planningTomorrowCount ?? 0,
       subtitle: 'Urgent active records queue',
       icon: CalendarClock,
       color: 'bg-slate-900 text-white',
@@ -68,7 +70,7 @@ export const DashboardPage: React.FC = () => {
     },
     {
       title: 'Expiring Soon (≤2 Days)',
-      value: data.expiringSoon,
+      value: data?.expiringSoon ?? 0,
       subtitle: 'Approaching SLA deadline',
       icon: Clock,
       color: 'bg-amber-500 text-white',
@@ -77,8 +79,8 @@ export const DashboardPage: React.FC = () => {
     },
     {
       title: 'Completed Terminal',
-      value: data.byStatus['Completed'] || 0,
-      subtitle: `${data.byStatus['Expired'] || 0} Expired automatically`,
+      value: byStatus['Completed'] || 0,
+      subtitle: `${byStatus['Expired'] || 0} Expired automatically`,
       icon: CheckCircle2,
       color: 'bg-emerald-600 text-white',
       border: 'border-emerald-200',

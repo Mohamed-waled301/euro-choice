@@ -1,0 +1,46 @@
+version: '3.8'
+
+services:
+  mongodb:
+    image: mongo:7.0
+    container_name: eurochoice-mongo
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    environment:
+      MONGO_INITDB_DATABASE: euro_choice
+
+  api:
+    build:
+      context: .
+      dockerfile: apps/api/Dockerfile
+    container_name: eurochoice-api
+    restart: unless-stopped
+    ports:
+      - "5000:5000"
+    environment:
+      PORT: 5000
+      NODE_ENV: production
+      MONGO_URI: mongodb://mongodb:27017/euro_choice
+      JWT_ACCESS_SECRET: eurochoice_super_secret_access_key_2026_jwt
+      JWT_REFRESH_SECRET: eurochoice_super_secret_refresh_key_2026_jwt
+      CORS_ORIGIN: http://localhost:5173
+      EXPIRATION_CRON_SCHEDULE: "*/15 * * * *"
+    depends_on:
+      - mongodb
+
+  web:
+    build:
+      context: .
+      dockerfile: apps/web/Dockerfile
+    container_name: eurochoice-web
+    restart: unless-stopped
+    ports:
+      - "5173:80"
+    depends_on:
+      - api
+
+volumes:
+  mongo_data:

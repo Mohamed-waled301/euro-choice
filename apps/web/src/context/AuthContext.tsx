@@ -1,7 +1,6 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { api, setAccessToken, getAccessToken } from '../lib/api';
 import { AuthUser, LoginRequest } from '@eurochoice/shared';
-import { isDemoMode, mockLogin, getMockUser } from '../lib/demoMode';
 
 interface AuthContextType {
   user: AuthUser | null;
@@ -19,23 +18,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const fetchCurrentUser = useCallback(async () => {
     try {
-      if (isDemoMode()) {
-        const token = getAccessToken();
-        if (token) {
-          const storedUser = localStorage.getItem('ec_demo_user');
-          if (storedUser) {
-            try {
-              setUser(JSON.parse(storedUser));
-            } catch {
-              setUser(getMockUser());
-            }
-          } else {
-            setUser(getMockUser());
-          }
-        }
-        return;
-      }
-
       const token = getAccessToken();
       if (!token) {
         // Attempt refresh
@@ -65,13 +47,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, [fetchCurrentUser]);
 
   const login = async (credentials: LoginRequest) => {
-    if (isDemoMode()) {
-      const res = await mockLogin(credentials);
-      setAccessToken(res.accessToken);
-      setUser(res.user);
-      return;
-    }
-
     const res = await api.post('/auth/login', credentials);
     setAccessToken(res.accessToken);
     setUser(res.user);
@@ -79,12 +54,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const logout = async () => {
     try {
-      if (isDemoMode()) {
-        localStorage.removeItem('ec_demo_user');
-        localStorage.removeItem('ec_demo_email');
-      } else {
-        await api.post('/auth/logout');
-      }
+      await api.post('/auth/logout');
     } catch {
       // ignore
     } finally {

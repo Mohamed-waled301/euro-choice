@@ -1,5 +1,3 @@
-import { isDemoMode, getDemoResponse } from './demoMode';
-
 let accessToken: string | null = localStorage.getItem('ec_access_token');
 
 export function setAccessToken(token: string | null) {
@@ -20,12 +18,6 @@ interface RequestOptions extends RequestInit {
 }
 
 export async function apiClient<T = any>(endpoint: string, options: RequestOptions = {}): Promise<T> {
-  // If Demo mode is active, directly simulate backend response
-  if (isDemoMode()) {
-    await new Promise((resolve) => setTimeout(resolve, 150));
-    return getDemoResponse(endpoint, options);
-  }
-
   const { params, headers = {}, ...customConfig } = options;
 
   let url = endpoint.startsWith('http')

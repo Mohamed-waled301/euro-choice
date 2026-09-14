@@ -20,7 +20,7 @@ async function bootstrap() {
     startExpirationCron();
 
     const app = createApp();
-    app.listen(config.port, () => {
+    app.listen(config.port, '0.0.0.0', () => {
       logger.info(`Euro Choice API server running on port ${config.port} in ${config.nodeEnv} mode`);
     });
   } catch (error) {

@@ -4,6 +4,8 @@ import { useAuth } from '../../context/AuthContext';
 import { Button } from '../../components/common/Button';
 import { Shield, KeyRound, Mail, AlertCircle, ArrowRight } from 'lucide-react';
 
+import { isDemoMode } from '../../lib/demoMode';
+
 export const LoginPage: React.FC = () => {
   const { login } = useAuth();
   const navigate = useNavigate();
@@ -54,6 +56,16 @@ export const LoginPage: React.FC = () => {
         <p className="mt-1 text-center text-xs text-slate-400 font-medium">
           Role-Based Client &amp; Records Management System
         </p>
+
+        {isDemoMode() && (
+          <div className="mt-3 py-1 px-3 rounded-full bg-emerald-950/60 border border-emerald-500/30 text-emerald-400 text-[11px] font-medium flex items-center justify-center gap-2 mx-auto w-fit">
+            <span className="relative flex h-2 w-2">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+            </span>
+            <span>Demo Mode Active &bull; Instant sign-in enabled</span>
+          </div>
+        )}
       </div>
 
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md relative z-10">
